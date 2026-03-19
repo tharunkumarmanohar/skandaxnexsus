@@ -358,3 +358,14 @@ def get_kpis():
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
 EOF
+
+3.7 - .gitignore
+cat > .gitignore << 'EOF'
+__pycache__/
+*.py[cod]
+.vscode/
+.idea/
+.env
+*.db
+*.log
+EOF
