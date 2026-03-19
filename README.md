@@ -312,3 +312,49 @@ class KPICalculator:
             }
         }
 EOF
+
+cat > app.py << 'EOF'
+"""
+Flask Application - ICDS Dashboard Backend
+"""
+
+from flask import Flask, jsonify, render_template
+from baseline_risk_logic import BaselineRiskLogic
+from referral_logic import ReferralLogic
+from kpi_calculator import KPICalculator
+
+app = Flask(__name__)
+
+baseline_logic = BaselineRiskLogic()
+referral_logic = ReferralLogic()
+
+sample_data = {
+    'children': [
+        {
+            'child_id': 'C001',
+            'name': 'Aditya Kumar',
+            'age_in_months': 36,
+            'awc_id': 'AWC_001',
+            'risk_score': 92,
+            'risk_level': 'critical',
+            'at_risk_domains': ['cognitive', 'language'],
+            'referral_needed': True,
+            'referral_completed': False
+        }
+    ],
+    'training': []
+}
+
+@app.route('/')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/api/kpis', methods=['GET'])
+def get_kpis():
+    kpi_calc = KPICalculator(sample_data)
+    kpis = kpi_calc.get_all_kpis()
+    return jsonify(kpis)
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+EOF
