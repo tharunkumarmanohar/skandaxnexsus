@@ -369,3 +369,10 @@ __pycache__/
 *.db
 *.log
 EOF
+
+cat > contact.txt << 'EOF'
+ICDS Child Development Intelligence Dashboard
+Project Lead: THARUN KUMAR MANOHAR
+Email: tharunkumarmanohar@gmail.com
+GitHub: https://github.com/tharunkumarmanohar/skandaxnexsus
+EOF
