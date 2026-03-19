@@ -381,5 +381,4 @@ git add .
 git commit -m "Initial commit: Complete ICDS Dashboard with Risk Stratification, Referral Logic, and KPI Calculator"
 git push origin main
 
-pip install -r requirements.txt
-python app.py
+
