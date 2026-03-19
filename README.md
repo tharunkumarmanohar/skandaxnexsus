@@ -249,3 +249,66 @@ class ReferralLogic:
         else:
             return {'urgency': 'LOW', 'target_days': 30}
 EOF
+
+cat > kpi_calculator.py << 'EOF'
+"""
+KPI Calculator - Mandatory Dashboard Metrics
+"""
+
+from datetime import datetime
+from collections import defaultdict
+
+class KPICalculator:
+    def __init__(self, data):
+        self.data = data
+        self.calculation_date = datetime.now().strftime("%Y-%m-%d")
+    
+    def total_children_screened(self):
+        return len(self.data.get('children', []))
+    
+    def assessments_per_awc(self):
+        awc_assessments = defaultdict(int)
+        for child in self.data.get('children', []):
+            awc = child.get('awc_id', 'Unknown')
+            awc_assessments[awc] += 1
+        return dict(awc_assessments)
+    
+    def get_age_band_distribution(self):
+        age_bands = {'0-1': 0, '1-2': 0, '2-3': 0, '3-4': 0, '4-5': 0, '5-6': 0}
+        for child in self.data.get('children', []):
+            age = child.get('age_in_months', 0) / 12
+            if age < 1:
+                age_bands['0-1'] += 1
+            elif age < 2:
+                age_bands['1-2'] += 1
+            elif age < 3:
+                age_bands['2-3'] += 1
+            elif age < 4:
+                age_bands['3-4'] += 1
+            elif age < 5:
+                age_bands['4-5'] += 1
+            else:
+                age_bands['5-6'] += 1
+        return age_bands
+    
+    def children_by_risk_level(self):
+        risk_counts = {'critical': 0, 'high': 0, 'medium': 0, 'low': 0}
+        for child in self.data.get('children', []):
+            risk_level = child.get('risk_level', 'unknown').lower()
+            if risk_level in risk_counts:
+                risk_counts[risk_level] += 1
+        return risk_counts
+    
+    def get_all_kpis(self):
+        return {
+            'calculation_date': self.calculation_date,
+            'screening_and_coverage': {
+                'total_children_screened': self.total_children_screened(),
+                'assessments_per_awc': self.assessments_per_awc(),
+                'age_band_distribution': self.get_age_band_distribution()
+            },
+            'risk_stratification': {
+                'children_by_risk_level': self.children_by_risk_level()
+            }
+        }
+EOF
