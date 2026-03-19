@@ -142,3 +142,110 @@ class BaselineRiskLogic:
             'urgency': 'CRITICAL' if baseline_score >= 80 else ('HIGH' if baseline_score >= 60 else 'MEDIUM' if baseline_score >= 40 else 'LOW')
         }
 EOF
+
+cat > referral_logic.py << 'EOF'
+"""
+Referral Decision Support Logic - Clinical Decision Rules
+Routes children to appropriate specialists based on domain deficits
+"""
+
+class ReferralLogic:
+    def __init__(self):
+        self.referral_rules = {
+            'neurodevelopmental_specialist': {
+                'triggers': ['cognitive_severe', 'language_severe', 'autism_indicators'],
+                'priority': 'CRITICAL'
+            },
+            'speech_language_therapist': {
+                'triggers': ['language_severe', 'speech_delay'],
+                'priority': 'HIGH'
+            },
+            'physiotherapist': {
+                'triggers': ['gross_motor_severe', 'fine_motor_severe'],
+                'priority': 'HIGH'
+            },
+            'psychologist': {
+                'triggers': ['socio_emotional_severe', 'behavioral_issues'],
+                'priority': 'HIGH'
+            },
+            'nutritionist': {
+                'triggers': ['severe_malnutrition', 'growth_failure'],
+                'priority': 'CRITICAL'
+            },
+            'social_worker': {
+                'triggers': ['family_crisis', 'abuse_suspected', 'economic_hardship'],
+                'priority': 'CRITICAL'
+            }
+        }
+    
+    def determine_referrals(self, risk_profile, neurobehavioral_data, nutrition_data):
+        """Determine which services child should be referred to"""
+        referrals = []
+        
+        # Check domain-specific referrals
+        at_risk_domains = risk_profile.get('at_risk_domains', [])
+        
+        if 'cognitive' in at_risk_domains:
+            referrals.append({
+                'service': 'neurodevelopmental_specialist',
+                'reason': 'Cognitive domain delay detected',
+                'priority': 'CRITICAL' if risk_profile['baseline_risk_score'] >= 80 else 'HIGH'
+            })
+        
+        if 'language' in at_risk_domains:
+            referrals.append({
+                'service': 'speech_language_therapist',
+                'reason': 'Language domain delay detected',
+                'priority': 'HIGH'
+            })
+        
+        if 'gross_motor' in at_risk_domains or 'fine_motor' in at_risk_domains:
+            referrals.append({
+                'service': 'physiotherapist',
+                'reason': 'Motor domain delay detected',
+                'priority': 'HIGH'
+            })
+        
+        if 'socio_emotional' in at_risk_domains:
+            referrals.append({
+                'service': 'psychologist',
+                'reason': 'Socio-emotional domain delay detected',
+                'priority': 'MEDIUM'
+            })
+        
+        # Check neurobehavioral indicators
+        if neurobehavioral_data.get('autism_indicators', False):
+            referrals.append({
+                'service': 'neurodevelopmental_specialist',
+                'reason': 'Autism spectrum indicators detected',
+                'priority': 'CRITICAL'
+            })
+        
+        if neurobehavioral_data.get('behavioral_issues', False):
+            referrals.append({
+                'service': 'psychologist',
+                'reason': 'Behavioral issues reported',
+                'priority': 'HIGH'
+            })
+        
+        # Check nutrition indicators
+        if nutrition_data.get('malnutrition_status', '') == 'SEVERE':
+            referrals.append({
+                'service': 'nutritionist',
+                'reason': 'Severe malnutrition detected',
+                'priority': 'CRITICAL'
+            })
+        
+        return referrals
+    
+    def calculate_referral_urgency(self, baseline_score):
+        """Determine urgency level for referral completion"""
+        if baseline_score >= 80:
+            return {'urgency': 'CRITICAL', 'target_days': 3}
+        elif baseline_score >= 60:
+            return {'urgency': 'HIGH', 'target_days': 7}
+        elif baseline_score >= 40:
+            return {'urgency': 'MEDIUM', 'target_days': 14}
+        else:
+            return {'urgency': 'LOW', 'target_days': 30}
+EOF
