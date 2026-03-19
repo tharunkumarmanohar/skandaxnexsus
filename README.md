@@ -22,3 +22,16 @@ AI-enabled Early Detection & Personalization system for children aged 0-6 years 
 pip install -r requirements.txt
 python app.py
  
+Project Lead: THARUN KUMAR MANOHAR Email: tharunkumarmanohar@gmail.com EOF
+
+
+#### **3.2 - requirements.txt**
+```bash
+cat > requirements.txt << 'EOF'
+flask==3.0.0
+pandas==2.0.0
+numpy==1.24.0
+openpyxl==3.10.0
+python-dotenv==1.0.0
+Werkzeug==3.0.0
+EOF
