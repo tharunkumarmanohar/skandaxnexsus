@@ -376,3 +376,7 @@ Project Lead: THARUN KUMAR MANOHAR
 Email: tharunkumarmanohar@gmail.com
 GitHub: https://github.com/tharunkumarmanohar/skandaxnexsus
 EOF
+
+git add .
+git commit -m "Initial commit: Complete ICDS Dashboard with Risk Stratification, Referral Logic, and KPI Calculator"
+git push origin main
